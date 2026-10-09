@@ -35,6 +35,13 @@
 - [ ] Router stub
 - [ ] README: end-to-end walkthrough, env vars, `extract()` usage
 
+## Deployment (after milestone 6)
+- [ ] Decide target: internal Docker host / Kubernetes / cloud VM
+- [ ] `backend/Dockerfile` with Tesseract + Thai data
+- [ ] Frontend static build + serving
+- [ ] `docker-compose.yml` with a persistent `DATA_DIR` volume
+- [ ] `/healthz`, `.env.example`, CI (tests + image build)
+
 ## Done
 - [x] Repo init, `.gitignore`
 - [x] Template JSON Schema + pydantic validation + tests
