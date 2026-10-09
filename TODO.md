@@ -26,7 +26,8 @@
 - [ ] Mocked-client tests
 
 ## Milestone 5: UI
-- [ ] 5a canvas, manual drawing, field editor, table columns, diff preview, save draft
+- [x] 5a canvas, manual drawing, field editor, table columns, JSON preview, save draft
+- [ ] 5a follow-ups: click through the UI in a real browser; show a true diff vs previous version; edit/open an existing template; touch support check; anchor text via OCR instead of typing
 - [ ] 5b Gemini detect button, checklist modal, merge, fallback to manual
 - [ ] 5c `/onboard` params, sessions API, return redirect, allowlist tests
 

@@ -21,8 +21,8 @@ Other services can send users here and get them back: `/onboard?doc_type=...&ret
 
 ```
 packages/ocrlib/   shared library: schema, coordinates, alignment, extract (pip-installable)
-backend/           FastAPI service (planned)
-frontend/          React + Vite review UI (planned)
+backend/           FastAPI service: sample upload (image/PDF), template save/list/get
+frontend/          React + Vite review UI: manual drawing canvas (Gemini mode coming)
 data/              templates, samples, cache (gitignored)
 ```
 
@@ -37,7 +37,25 @@ pip install -e "packages/ocrlib[dev]"
 cd packages/ocrlib && python -m pytest
 ```
 
-## Environment variables (planned)
+## Run the app (manual drawing mode)
+
+```powershell
+# one-time
+python -m venv .venv ; .\.venv\Scripts\Activate.ps1
+pip install -e "packages/ocrlib[dev]" -e "backend[dev]"
+cd frontend ; npm install ; cd ..
+
+.\dev.ps1          # opens backend on :8000 and frontend on :5173
+```
+
+Open http://localhost:5173, upload a sample, drag rectangles on the page, set key/type for fields, mark 2-4 boxes as anchors, then *Review & save draft*. Templates are written to `data/templates/{template_id}/v{n}.json` (plus the reference image).
+
+Tests: `cd packages/ocrlib && python -m pytest`, `cd backend && python -m pytest`, `cd frontend && npm test`.
+
+## Environment variables (planned unless noted)
+
+Implemented now: `DATA_DIR`, `MAX_UPLOAD_MB` (20), `PDF_DPI` (200), `CORS_ORIGINS`.
+
 
 | Variable | Purpose |
 | --- | --- |
@@ -61,7 +79,7 @@ template = validate_template(json_dict)   # raises TemplateValidationError
 
 ## Onboarding a new doc type end to end
 
-*To be completed as the UI and backend land (milestones 4–6).*
+1. Open the UI, upload a sample page. 2. Draw boxes, name fields, mark anchors (and tables with columns). 3. Review & save: a new immutable `draft` version is written. (Validation on extra samples and Gemini detection are still to come.)
 
 ## Redirect integration
 
