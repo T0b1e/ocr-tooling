@@ -86,7 +86,7 @@ export default function App() {
       </header>
       {saved && <div className="ok">Saved <b>{saved.template_id}</b> v{saved.version} as <b>draft</b>. It becomes active after validation on extra samples.</div>}
       {errors.length > 0 && <div className="err">{errors.map((e) => <div key={e}>{e}</div>)}</div>}
-      {problems.length > 0 && items.length > 0 && <div className="warn">{problems.join(" · ")}</div>}
+      {problems.length > 0 && <div className="warn"><b>Before you can save:</b> {problems.join(" · ")}</div>}
       <div className="body">
         <Canvas imageUrl={sample.image_url} items={items} selectedId={selected} onSelect={setSelected}
           onChange={(id, box) => patch(id, { box })} onCreate={create} onDelete={remove} />
