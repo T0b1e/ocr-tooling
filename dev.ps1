@@ -2,4 +2,4 @@
 $root = $PSScriptRoot
 Start-Process powershell -ArgumentList "-NoExit","-Command","cd '$root\backend'; & '$root\.venv\Scripts\Activate.ps1'; python -m uvicorn app.main:app --reload --port 8000"
 Start-Process powershell -ArgumentList "-NoExit","-Command","cd '$root\frontend'; npm run dev"
-Write-Host "Open http://localhost:5173"
+Write-Host "Open http://127.0.0.1:5173"
