@@ -69,4 +69,16 @@ template = validate_template(json_dict)   # raises TemplateValidationError
 
 ## Calling extract from a service
 
-*Planned (milestone 3).* `extract(image, template) -> {field: {value, confidence}}`.
+```python
+from ocrlib.extract import extract
+from ocrlib.ocr import TesseractOcr          # pip install -e "packages/ocrlib[ocr]" + tesseract binary with tha+eng
+
+result = extract(scan, template, reference_image, TesseractOcr())
+# {"invoice_no": {"value": "INV-20431", "confidence": 0.93, "valid": True}, ...}
+```
+
+- `reference_image` is the sample page the template was built from; it is stored with each template version and is needed for feature matching. (The brief's `extract(image, template)` gained this argument and an `ocr` engine.)
+- `extract_detailed()` also returns the alignment (transform, inliers, per-anchor scores). Raises `AlignmentError` when the anchors cannot be found; callers should route that to onboarding or manual review.
+- Field `confidence` = OCR confidence, capped by alignment confidence and halved when a field's regex validator fails.
+- Tables: the table box must exclude the header row; rows are detected by line gaps, cells by the template columns.
+- Plug any OCR by implementing `read(image) -> OcrResult(text, confidence)`.

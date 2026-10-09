@@ -6,15 +6,17 @@
 - [ ] Are the existing services Python (import `ocrlib`) or should `extract` be exposed over HTTP?
 - [ ] Is a redirect enough on completion, or do you also want a `callback_url` webhook?
 
-## Milestone 3: alignment + extract (next)
-- [ ] Synthetic sample document generator for tests
-- [ ] Anchor locating (feature matching, template-matching fallback)
-- [ ] Transform estimation (homography, affine fallback)
-- [ ] Warp field boxes, crop
-- [ ] `OcrEngine` protocol + Tesseract implementation
-- [ ] Validators/normalizers (thai_id checksum, date, number)
-- [ ] `extract(image, template)` with per-field confidence
-- [ ] Tests: shifted, scaled, rotated, perspective, blurred copies
+## Milestone 3: alignment + extract (done)
+- [x] Synthetic sample document generator + distortions (tests/synth.py)
+- [x] Anchor locating (SIFT on anchor regions, whole-page retry) + RANSAC homography, similarity fallback
+- [x] Rectify scan into reference frame, warp boxes to quads
+- [x] `OcrEngine` protocol + `TesseractOcr` adapter
+- [x] Validators/normalizers (thai_id checksum, date incl. Buddhist year, number)
+- [x] `extract()` / `extract_detailed()` with per-field confidence
+- [x] Tests: shifted, scaled, rotated, perspective, blurred/noisy copies
+- [ ] Install Tesseract (+ tha data) and run a real-OCR smoke test on a Thai sample
+- [ ] Thai month names in dates (e.g. "5 มี.ค. 2567")
+- [ ] Table header-row handling (currently the table box must exclude the header)
 
 ## Milestone 4: Gemini endpoint
 - [ ] PDF -> image (PyMuPDF)
