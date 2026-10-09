@@ -1,5 +1,17 @@
 # ocr-tooling
 
+## Why this exists
+
+We are working on a digital transformation that depends heavily on OCR. A common approach is to send every document to an LLM such as Gemini or Claude and let it read the fields. That works, but it burns a large number of tokens on every single document, and the cost adds up quickly at volume.
+
+Most of our documents do not need that. Many document types have fields in the same place every time, and the layout has never changed. For those, **template recognition** is far cheaper and faster: we save the field positions once, then crop and read just those regions on every later document, with no LLM call.
+
+The gap is the case where we do not have a template yet. A new document type arrives, and there is no good way to create one. This tool closes that gap. The LLM is used **once per new document type** to propose the field locations (or you draw them by hand), a person reviews them, and the result is saved as a template. After that, the OCR microservices use the saved template and never call the LLM for that document type again.
+
+In short: **spend LLM tokens once to onboard a document type, then extract every later document with the template.**
+
+---
+
 Template onboarding tool for new document types. Our OCR microservices extract fields from saved per-document-type template positions; this tool creates those templates.
 
 > Status: early development. See [ROADMAP.md](ROADMAP.md) for what exists and [TODO.md](TODO.md) for the task list.
