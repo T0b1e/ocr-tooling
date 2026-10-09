@@ -1,0 +1,13 @@
+"""Domain errors. Services raise these; `main.py` maps them to HTTP responses, so no layer below the routes knows about HTTP."""
+
+
+class AppError(Exception):
+    def __init__(self, *errors: str):
+        self.errors = list(errors)
+        super().__init__("; ".join(errors))
+
+
+class NotFound(AppError): ...
+class Conflict(AppError): ...
+class Invalid(AppError): ...
+class TooLarge(AppError): ...

@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Box, Handle, boxFromPoints, moveBox, pointToNorm, resizeBox, MIN_SIZE } from "./geometry";
 import { Item } from "./model";
+import { t } from "./i18n";
 
 const HANDLES: Handle[] = ["nw", "n", "ne", "e", "se", "s", "sw", "w"];
 
@@ -81,7 +82,7 @@ export function Canvas({ imageUrl, items, selectedId, onSelect, onChange, onCrea
         onPointerDown={(e) => { onSelect(null); begin(e, { kind: "draw", start: norm(e), box: [0, 0, 0, 0] }); }}
         onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
       >
-        <img src={imageUrl} alt="document sample" draggable={false} />
+        <img src={imageUrl} alt={t("sampleAlt")} draggable={false} />
         {items.map((it) => {
           const sel = it.id === selectedId;
           const [y1, x1, y2, x2] = it.box;
@@ -105,7 +106,7 @@ export function Canvas({ imageUrl, items, selectedId, onSelect, onChange, onCrea
         })}
         {draft && <div className="box draft" style={pos(draft)} />}
       </div>
-      <p className="hint">Drag on the page to draw a box · click a box to select · drag to move · handles to resize · arrows nudge (Shift = bigger) · Delete removes</p>
+      <p className="hint">{t("canvasHint")}</p>
     </div>
   );
 }

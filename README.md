@@ -34,6 +34,11 @@ Other services can send users here and get them back: `/onboard?doc_type=...&ret
 ```
 packages/ocrlib/   shared library: schema, coordinates, alignment, extract (pip-installable)
 backend/           FastAPI service: sample upload (image/PDF), template save/list/get
+  app/routes/        thin HTTP handlers (parse request, call a service, shape response)
+  app/services/      use-cases (SampleService, TemplateService); no HTTP, no file paths
+  app/storage.py     `Storage` protocol + filesystem adapter (swap for S3/Postgres here)
+  app/errors.py      domain errors, mapped to HTTP status in main.py
+  app/deps.py        composition root wiring adapters into services
 frontend/          React + Vite review UI: manual drawing canvas (Gemini mode coming)
 data/              templates, samples, cache (gitignored)
 ```

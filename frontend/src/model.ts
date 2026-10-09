@@ -1,4 +1,5 @@
 import { Box, columnsToPage, roundBox } from "./geometry";
+import { t } from "./i18n";
 
 export type FieldType = "text" | "date" | "number" | "thai_id" | "table" | "checkbox";
 export const FIELD_TYPES: FieldType[] = ["text", "date", "number", "thai_id", "table", "checkbox"];
@@ -47,16 +48,16 @@ export function toPayload(sampleId: string, templateId: string, items: Item[]) {
 /** Cheap client-side checks so the user sees problems before the round trip (server remains the authority). */
 export function localProblems(templateId: string, items: Item[]): string[] {
   const out: string[] = [];
-  if (!/^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$/.test(templateId.trim())) out.push("Template ID: letters, digits, _ . - only");
+  if (!/^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$/.test(templateId.trim())) out.push(t("pTemplateId"));
   const anchors = items.filter((i) => i.role === "anchor");
-  if (anchors.length < 2 || anchors.length > 4) out.push(`Mark 2-4 anchors (currently ${anchors.length})`);
-  if (anchors.some((a) => !a.text.trim())) out.push("Every anchor needs its text");
+  if (anchors.length < 2 || anchors.length > 4) out.push(t("pAnchors")(anchors.length));
+  if (anchors.some((a) => !a.text.trim())) out.push(t("pAnchorText"));
   const keys = items.filter((i) => i.role === "field").map((f) => f.key.trim());
-  if (keys.some((k) => !/^[A-Za-z_][A-Za-z0-9_]*$/.test(k))) out.push("Every field needs a key (letters, digits, _; not starting with a digit)");
-  if (new Set(keys).size !== keys.length) out.push("Field keys must be unique");
+  if (keys.some((k) => !/^[A-Za-z_][A-Za-z0-9_]*$/.test(k))) out.push(t("pKeys"));
+  if (new Set(keys).size !== keys.length) out.push(t("pUnique"));
   for (const f of items.filter((i) => i.role === "field")) {
-    if (f.validator) { try { new RegExp(f.validator); } catch { out.push(`${f.key || "field"}: invalid validator regex`); } }
-    if (f.type === "table" && f.columns.length === 0) out.push(`${f.key || "table"}: define at least one column`);
+    if (f.validator) { try { new RegExp(f.validator); } catch { out.push(t("pRegex")(f.key || t("field"))); } }
+    if (f.type === "table" && f.columns.length === 0) out.push(t("pColumns")(f.key || t("table")));
   }
   return out;
 }

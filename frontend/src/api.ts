@@ -6,9 +6,17 @@ export class ApiError extends Error {
   }
 }
 
+async function request(url: string, init?: RequestInit): Promise<Response> {
+  try {
+    return await request(url, init);
+  } catch {
+    throw new ApiError(["Cannot reach the server. Check that the backend is running and try again."], 0);
+  }
+}
+
 async function parse(r: Response) {
   if (r.ok) return r.json();
-  let errors = [`HTTP ${r.status}`];
+  let errors = [r.status >= 500 ? `Server error (HTTP ${r.status}). Please try again.` : `Request failed (HTTP ${r.status})`];
   try {
     const body = await r.json();
     const d = body.detail;
@@ -22,13 +30,13 @@ async function parse(r: Response) {
 export async function uploadSample(file: File): Promise<Sample> {
   const fd = new FormData();
   fd.append("file", file);
-  return parse(await fetch("/api/samples", { method: "POST", body: fd }));
+  return parse(await request("/api/samples", { method: "POST", body: fd }));
 }
 
 export async function nextVersion(templateId: string): Promise<number> {
-  return (await parse(await fetch(`/api/templates/${encodeURIComponent(templateId)}/next-version`))).version;
+  return (await parse(await request(`/api/templates/${encodeURIComponent(templateId)}/next-version`))).version;
 }
 
 export async function saveTemplate(body: unknown) {
-  return parse(await fetch("/api/templates", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }));
+  return parse(await request("/api/templates", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }));
 }
