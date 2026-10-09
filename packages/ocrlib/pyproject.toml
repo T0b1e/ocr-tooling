@@ -1,0 +1,22 @@
+[project]
+name = "ocrlib"
+version = "0.1.0"
+description = "Template schema, alignment and extraction for ocr-tooling"
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2.6", "jsonschema>=4.21", "numpy", "opencv-python-headless", "pillow"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["ocrlib*"]
+
+[tool.setuptools.package-data]
+ocrlib = ["schema/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

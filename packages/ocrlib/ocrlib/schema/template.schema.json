@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ocr-tooling/schema/template.schema.json",
+  "title": "OCR template",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["template_id", "version", "status", "page_size", "fingerprint", "anchors", "fields"],
+  "properties": {
+    "template_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$" },
+    "version": { "type": "integer", "minimum": 1 },
+    "status": { "enum": ["draft", "active", "archived"] },
+    "page_size": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width_px", "height_px"],
+      "properties": {
+        "width_px": { "type": "integer", "minimum": 1 },
+        "height_px": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "fingerprint": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1, "uniqueItems": true },
+    "anchors": { "type": "array", "minItems": 2, "maxItems": 4, "items": { "$ref": "#/$defs/anchor" } },
+    "fields": { "type": "array", "items": { "$ref": "#/$defs/field" } }
+  },
+  "$defs": {
+    "box": {
+      "description": "Normalized 0-1 box in [y1, x1, y2, x2] order, relative to page size.",
+      "type": "array",
+      "items": { "type": "number", "minimum": 0, "maximum": 1 },
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "anchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text", "kind", "box"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "text": { "type": "string" },
+        "kind": { "enum": ["title", "logo", "label"] },
+        "box": { "$ref": "#/$defs/box" }
+      }
+    },
+    "column": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "x1", "x2"],
+      "properties": {
+        "key": { "type": "string", "minLength": 1 },
+        "x1": { "type": "number", "minimum": 0, "maximum": 1 },
+        "x2": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "type", "box"],
+      "properties": {
+        "key": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" },
+        "type": { "enum": ["text", "date", "number", "thai_id", "table", "checkbox"] },
+        "box": { "$ref": "#/$defs/box" },
+        "validator": { "type": "string" },
+        "columns": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/column" } },
+        "source": { "enum": ["gemini", "manual"] }
+      },
+      "if": { "properties": { "type": { "const": "table" } }, "required": ["type"] },
+      "then": { "required": ["columns"] },
+      "else": { "not": { "required": ["columns"] } }
+    }
+  }
+}
